@@ -1,0 +1,84 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://schemas.autogoods.inc/validation-experiment.schema.json",
+  "title": "Validation Experiment",
+  "type": "object",
+  "additionalProperties": false,
+  "properties": {
+    "experiment_id": {
+      "$ref": "definitions.schema.json#/$defs/identifier"
+    },
+    "opportunity_id": {
+      "$ref": "definitions.schema.json#/$defs/identifier"
+    },
+    "hypothesis": {
+      "$ref": "definitions.schema.json#/$defs/evidenceClaim"
+    },
+    "method": {
+      "type": "string",
+      "minLength": 1
+    },
+    "success_criteria": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "minLength": 1
+      },
+      "minItems": 1
+    },
+    "budget": {
+      "$ref": "definitions.schema.json#/$defs/money"
+    },
+    "starts_at": {
+      "$ref": "definitions.schema.json#/$defs/timestamp"
+    },
+    "ends_at": {
+      "$ref": "definitions.schema.json#/$defs/timestamp"
+    },
+    "result": {
+      "type": "string",
+      "enum": [
+        "PENDING",
+        "PROMOTE",
+        "HOLD",
+        "KILL"
+      ]
+    },
+    "result_claims": {
+      "type": "array",
+      "items": {
+        "$ref": "definitions.schema.json#/$defs/evidenceClaim"
+      },
+      "minItems": 0
+    },
+    "evidence_ids": {
+      "type": "array",
+      "items": {
+        "$ref": "definitions.schema.json#/$defs/identifier"
+      },
+      "minItems": 0,
+      "uniqueItems": true
+    },
+    "approved_by": {
+      "$ref": "definitions.schema.json#/$defs/actor"
+    },
+    "created_at": {
+      "$ref": "definitions.schema.json#/$defs/timestamp"
+    }
+  },
+  "required": [
+    "experiment_id",
+    "opportunity_id",
+    "hypothesis",
+    "method",
+    "success_criteria",
+    "budget",
+    "starts_at",
+    "ends_at",
+    "result",
+    "result_claims",
+    "evidence_ids",
+    "approved_by",
+    "created_at"
+  ]
+}

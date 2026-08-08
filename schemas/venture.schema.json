@@ -1,0 +1,69 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://schemas.autogoods.inc/venture.schema.json",
+  "title": "Venture",
+  "type": "object",
+  "additionalProperties": false,
+  "properties": {
+    "venture_id": {
+      "$ref": "definitions.schema.json#/$defs/identifier"
+    },
+    "candidate_id": {
+      "$ref": "definitions.schema.json#/$defs/identifier"
+    },
+    "name": {
+      "type": "string",
+      "minLength": 1
+    },
+    "status": {
+      "type": "string",
+      "enum": [
+        "APPROVED",
+        "BUILDING",
+        "QA",
+        "STAGING",
+        "PRODUCTION",
+        "PAUSED",
+        "RETIRED"
+      ]
+    },
+    "owner_id": {
+      "$ref": "definitions.schema.json#/$defs/identifier"
+    },
+    "approved_budget": {
+      "$ref": "definitions.schema.json#/$defs/money"
+    },
+    "repository_uri": {
+      "$ref": "definitions.schema.json#/$defs/uri"
+    },
+    "product_uri": {
+      "$ref": "definitions.schema.json#/$defs/uri"
+    },
+    "approved_by": {
+      "$ref": "definitions.schema.json#/$defs/actor"
+    },
+    "approved_at": {
+      "$ref": "definitions.schema.json#/$defs/timestamp"
+    },
+    "provenance": {
+      "type": "array",
+      "items": {
+        "$ref": "definitions.schema.json#/$defs/provenance"
+      },
+      "minItems": 1
+    }
+  },
+  "required": [
+    "venture_id",
+    "candidate_id",
+    "name",
+    "status",
+    "owner_id",
+    "approved_budget",
+    "repository_uri",
+    "product_uri",
+    "approved_by",
+    "approved_at",
+    "provenance"
+  ]
+}

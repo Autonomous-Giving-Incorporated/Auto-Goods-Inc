@@ -1,0 +1,89 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://schemas.autogoods.inc/profit-distribution.schema.json",
+  "title": "Profit Distribution",
+  "type": "object",
+  "additionalProperties": false,
+  "properties": {
+    "distribution_id": {
+      "$ref": "definitions.schema.json#/$defs/identifier"
+    },
+    "venture_id": {
+      "$ref": "definitions.schema.json#/$defs/identifier"
+    },
+    "period_start": {
+      "$ref": "definitions.schema.json#/$defs/timestamp"
+    },
+    "period_end": {
+      "$ref": "definitions.schema.json#/$defs/timestamp"
+    },
+    "revenue": {
+      "$ref": "definitions.schema.json#/$defs/money"
+    },
+    "verified_costs": {
+      "$ref": "definitions.schema.json#/$defs/money"
+    },
+    "distributable_profit": {
+      "$ref": "definitions.schema.json#/$defs/money"
+    },
+    "auto_goods_share": {
+      "$ref": "definitions.schema.json#/$defs/money"
+    },
+    "community_wellness_share": {
+      "$ref": "definitions.schema.json#/$defs/money"
+    },
+    "split_basis_points": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "auto_goods",
+        "community_wellness"
+      ],
+      "properties": {
+        "auto_goods": {
+          "const": 5000
+        },
+        "community_wellness": {
+          "const": 5000
+        }
+      }
+    },
+    "ledger_event_ids": {
+      "type": "array",
+      "items": {
+        "$ref": "definitions.schema.json#/$defs/identifier"
+      },
+      "minItems": 1,
+      "uniqueItems": true
+    },
+    "verified_by": {
+      "$ref": "definitions.schema.json#/$defs/actor"
+    },
+    "verified_at": {
+      "$ref": "definitions.schema.json#/$defs/timestamp"
+    },
+    "provenance": {
+      "type": "array",
+      "items": {
+        "$ref": "definitions.schema.json#/$defs/provenance"
+      },
+      "minItems": 1
+    }
+  },
+  "required": [
+    "distribution_id",
+    "venture_id",
+    "period_start",
+    "period_end",
+    "revenue",
+    "verified_costs",
+    "distributable_profit",
+    "auto_goods_share",
+    "community_wellness_share",
+    "split_basis_points",
+    "ledger_event_ids",
+    "verified_by",
+    "verified_at",
+    "provenance"
+  ]
+}

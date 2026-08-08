@@ -1,0 +1,5 @@
+kind: lifecycle
+states: [draft, submitted, approved]
+initial: draft
+transitions: {draft: [submitted], submitted: [approved], approved: []}
+events: [{from: draft, to: approved}]

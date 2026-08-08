@@ -1,0 +1,49 @@
+policy:
+  id: treasury
+  version: 0.1.0
+  effective_from: 2026-08-08
+  deterministic: true
+  default_effect: deny
+  runtime_mutable: false
+  ordinary_agent_amendment: PROHIBITED
+
+money:
+  representation: integer_minor_units
+  floating_point: prohibited
+
+formulas:
+  NetProductRevenue: Revenue - Refunds - Chargebacks - ProcessingFees
+  OperatingContribution: NetProductRevenue - DirectProductCosts - Infrastructure - Support - ApprovedAcquisitionSpend
+  DistributableProfit: OperatingContribution - TaxReserve - RequiredOperatingReserve
+
+eligibility:
+  distribute_only_when_distributable_profit_positive: true
+  zero_or_negative_effect: no_distribution
+  reconciliation_required: true
+
+split:
+  organization_numerator: 1
+  community_numerator: 1
+  denominator: 2
+  organization_rounding: floor
+  community_allocation: DistributableProfit - OrganizationAllocation
+  invariants:
+    - OrganizationAllocation + CommunityAllocation == DistributableProfit
+    - absolute(OrganizationAllocation - CommunityAllocation) <= 1
+
+freeze:
+  state_on_failure: FROZEN
+  blocks: [treasury_payout, community_payout, distribution_finalization]
+  triggers:
+    - non_integer_money
+    - incomplete_reconciliation
+    - split_sum_mismatch
+    - split_difference_exceeds_one_minor_unit
+    - ledger_integrity_uncertain
+    - required_approval_missing
+    - incident_freeze_invoked
+  unfreeze_requires: [resolved_trigger, reconciled_ledger, independent_review, human_approval, RunReceipt]
+
+change_control:
+  requires: [explicit_human_governance, versioned_policy_change, migration_review, security_review, tests, immutable_audit_trail]
+  reinterpret_historical_periods: prohibited

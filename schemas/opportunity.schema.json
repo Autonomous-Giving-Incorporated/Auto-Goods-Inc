@@ -1,0 +1,69 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://schemas.autogoods.inc/opportunity.schema.json",
+  "title": "Opportunity",
+  "type": "object",
+  "additionalProperties": false,
+  "properties": {
+    "opportunity_id": {
+      "$ref": "definitions.schema.json#/$defs/identifier"
+    },
+    "gap_id": {
+      "$ref": "definitions.schema.json#/$defs/identifier"
+    },
+    "title": {
+      "type": "string",
+      "minLength": 1
+    },
+    "customer": {
+      "$ref": "definitions.schema.json#/$defs/evidenceClaim"
+    },
+    "problem": {
+      "$ref": "definitions.schema.json#/$defs/evidenceClaim"
+    },
+    "solution_hypothesis": {
+      "$ref": "definitions.schema.json#/$defs/evidenceClaim"
+    },
+    "commercial_model": {
+      "$ref": "definitions.schema.json#/$defs/evidenceClaim"
+    },
+    "evidence_ids": {
+      "type": "array",
+      "items": {
+        "$ref": "definitions.schema.json#/$defs/identifier"
+      },
+      "minItems": 1,
+      "uniqueItems": true
+    },
+    "stage": {
+      "type": "string",
+      "enum": [
+        "DRAFT",
+        "RESEARCH",
+        "VALIDATION",
+        "PROMOTED",
+        "HELD",
+        "KILLED"
+      ]
+    },
+    "created_at": {
+      "$ref": "definitions.schema.json#/$defs/timestamp"
+    },
+    "updated_at": {
+      "$ref": "definitions.schema.json#/$defs/timestamp"
+    }
+  },
+  "required": [
+    "opportunity_id",
+    "gap_id",
+    "title",
+    "customer",
+    "problem",
+    "solution_hypothesis",
+    "commercial_model",
+    "evidence_ids",
+    "stage",
+    "created_at",
+    "updated_at"
+  ]
+}

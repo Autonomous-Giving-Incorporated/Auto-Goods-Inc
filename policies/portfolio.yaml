@@ -1,0 +1,39 @@
+policy:
+  id: portfolio
+  version: 0.1.0
+  effective_from: 2026-08-08
+  default_effect: deny
+
+limits:
+  max_active_validation_experiments: 5
+  max_simultaneous_builds: 2
+  portfolio_concentration_requires_review: true
+
+prefer:
+  - low_proof_cost
+  - short_time_to_revenue
+  - high_automation_fit
+  - low_regulatory_complexity
+  - low_support_burden
+
+avoid_initially:
+  - medical_decision_software
+  - individualized_financial_advice
+  - physical_inventory_businesses
+  - heavily_regulated_marketplaces
+  - custom_enterprise_consulting_projects
+  - products_requiring_large_support_teams
+
+kill_conditions:
+  - validation_budget_exhausted_without_threshold
+  - buyer_hypothesis_falsified
+  - acquisition_cost_breaks_allowed_economics
+  - support_cost_destroys_unit_economics
+  - legal_or_platform_constraint_invalidates_model
+  - substitute_removes_meaningful_differentiation
+  - evidence_confidence_collapses
+
+portfolio_controller:
+  responsibilities: [owns_venture_queue, compares_venture_candidates, assigns_validation_budgets, promotes_holds_or_kills_by_policy, manages_portfolio_concentration]
+  controls_treasury_invariants: prohibited
+  may_modify_own_budget_ceiling: prohibited

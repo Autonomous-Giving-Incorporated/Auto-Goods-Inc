@@ -1,0 +1,51 @@
+policy:
+  id: venture_lifecycle
+  version: 0.1.0
+  effective_from: 2026-08-08
+  default_effect: deny
+
+states: [SIGNAL, DISCOVERED, EVIDENCED, VALIDATION_READY, VALIDATING, APPROVED, BUILDING, QA, LAUNCH_READY, LIVE, REVENUE_GENERATING, OPTIMIZING, SCALE, HOLD, RETIRE]
+initial_state: SIGNAL
+terminal_states: [SCALE, HOLD, RETIRE]
+
+transitions:
+  SIGNAL:
+    DISCOVERED: [three_independent_MarketSignals, concrete_affected_user, repeated_problem]
+  DISCOVERED:
+    EVIDENCED: [economic_buyer_identified, current_alternative_identified, distribution_hypothesis_defined, evidence_threshold_passed]
+  EVIDENCED:
+    VALIDATION_READY: [solution_shape_defined, ProofCost_estimated, basic_unit_economics_present, failure_conditions_defined]
+  VALIDATION_READY:
+    VALIDATING: [ValidationExperiment_approved, budget_grant_active, judge_independent]
+  VALIDATING:
+    APPROVED: [external_validation_threshold_met, Evidence_Judge_PROMOTE]
+    HOLD: [Evidence_Judge_HOLD]
+    RETIRE: [Evidence_Judge_KILL]
+  APPROVED:
+    BUILDING: [Product_spec_approved, build_slot_available]
+  BUILDING:
+    QA: [build_complete, tests_present]
+  QA:
+    LAUNCH_READY: [QA_gate_passed, release_evidence_complete]
+  LAUNCH_READY:
+    LIVE: [user_confirmation_recorded, production_checks_passed, rollback_ready]
+  LIVE:
+    REVENUE_GENERATING: [settled_Transaction_observed, LedgerEvent_recorded]
+    HOLD: [hold_gate_recorded]
+    RETIRE: [kill_condition_recorded]
+  REVENUE_GENERATING:
+    OPTIMIZING: [reconciliation_current, optimization_grant_active]
+    HOLD: [hold_gate_recorded]
+    RETIRE: [kill_condition_recorded]
+  OPTIMIZING:
+    SCALE: [scale_gate_passed]
+    HOLD: [hold_gate_recorded]
+    RETIRE: [kill_condition_recorded]
+
+rules:
+  unlisted_transition: deny
+  missing_gate: deny
+  unauthorized_transition: deny
+  skipped_state: deny
+  transition_requires_PolicyDecision: true
+  transition_requires_RunReceipt: true

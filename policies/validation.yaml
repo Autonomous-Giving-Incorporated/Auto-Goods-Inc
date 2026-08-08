@@ -1,0 +1,42 @@
+policy:
+  id: validation
+  version: 0.1.0
+  effective_from: 2026-08-08
+  default_outcome: HOLD
+
+claim_labels: [OBSERVED, INFERRED, SPECULATIVE, NOT_COMPUTABLE]
+label_rules:
+  OBSERVED:
+    provenance_required: true
+  INFERRED:
+    observed_input_ids_required: true
+  SPECULATIVE:
+    may_authorize_spend: false
+    may_authorize_venture_promotion: false
+  NOT_COMPUTABLE:
+    remain_unresolved: true
+    invented_substitution: prohibited
+
+separation_of_duties:
+  hypothesis_author_may_grade_success: false
+  experiment_designer_may_be_evidence_judge: false
+  validation_operator_may_unilaterally_promote: false
+
+outcomes: [PROMOTE, HOLD, KILL]
+promotion_requires_external_validation:
+  accepted_types: [paid_pilot, preorder, actual_usage, waitlist_conversion, successful_paid_test, signed_LOI, direct_customer_evidence]
+  llm_claim_of_demand_qualifies: false
+  provenance_required: true
+  threshold_predeclared: true
+  failure_conditions_predeclared: true
+  independent_judgment_required: true
+
+budget:
+  integer_minor_units: true
+  active_AuthorityGrant_required: true
+  spend_above_ceiling: prohibited
+  self_modified_ceiling: prohibited
+
+proof_cost:
+  includes: [money, time, irreversible_commitment]
+  prefer_high_expected_value_low_proof_cost: true

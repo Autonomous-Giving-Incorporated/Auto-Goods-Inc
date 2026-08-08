@@ -1,0 +1,69 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://schemas.autogoods.inc/ledger-event.schema.json",
+  "title": "Ledger Event",
+  "type": "object",
+  "additionalProperties": false,
+  "properties": {
+    "ledger_event_id": {
+      "$ref": "definitions.schema.json#/$defs/identifier"
+    },
+    "venture_id": {
+      "$ref": "definitions.schema.json#/$defs/identifier"
+    },
+    "event_type": {
+      "type": "string",
+      "enum": [
+        "PAYMENT_SETTLED",
+        "REFUND_SETTLED",
+        "COST_VERIFIED",
+        "ADJUSTMENT",
+        "DISTRIBUTION",
+        "COMMUNITY_PAYMENT"
+      ]
+    },
+    "occurred_at": {
+      "$ref": "definitions.schema.json#/$defs/timestamp"
+    },
+    "amount": {
+      "$ref": "definitions.schema.json#/$defs/money"
+    },
+    "account_id": {
+      "$ref": "definitions.schema.json#/$defs/identifier"
+    },
+    "counterparty_id": {
+      "$ref": "definitions.schema.json#/$defs/identifier"
+    },
+    "external_transaction_id": {
+      "type": "string",
+      "minLength": 1
+    },
+    "evidence_ids": {
+      "type": "array",
+      "items": {
+        "$ref": "definitions.schema.json#/$defs/identifier"
+      },
+      "minItems": 1,
+      "uniqueItems": true
+    },
+    "provenance": {
+      "type": "array",
+      "items": {
+        "$ref": "definitions.schema.json#/$defs/provenance"
+      },
+      "minItems": 1
+    }
+  },
+  "required": [
+    "ledger_event_id",
+    "venture_id",
+    "event_type",
+    "occurred_at",
+    "amount",
+    "account_id",
+    "counterparty_id",
+    "external_transaction_id",
+    "evidence_ids",
+    "provenance"
+  ]
+}

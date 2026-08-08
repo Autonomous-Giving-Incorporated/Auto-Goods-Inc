@@ -1,0 +1,4 @@
+kind: evidence
+items:
+  - {id: ev-1, label: VERIFIED}
+  - {id: ev-1, label: observed}

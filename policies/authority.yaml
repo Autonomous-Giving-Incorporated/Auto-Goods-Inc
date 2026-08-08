@@ -1,0 +1,53 @@
+policy:
+  id: authority
+  version: 0.1.0
+  effective_from: 2026-08-08
+  default_effect: deny
+  precedence: [constitution, human_governance, company_policy, venture_policy, authority_grant]
+
+authority_classes:
+  AUTO_ALLOWED: bounded, reversible action allowed without case-specific approval
+  POLICY_ALLOWED: allowed only by a matching versioned policy and active AuthorityGrant
+  USER_CONFIRMATION_REQUIRED: designated accountable user must approve the action
+  QUALIFIED_HUMAN_REQUIRED: appropriately qualified human must approve the action
+  PROHIBITED: no agent or ordinary runtime actor may perform the action
+
+actions:
+  public_market_research: AUTO_ALLOWED
+  generate_venture_hypothesis: AUTO_ALLOWED
+  score_opportunity: AUTO_ALLOWED
+  build_prototype: POLICY_ALLOWED
+  create_repository: POLICY_ALLOWED
+  deploy_staging: POLICY_ALLOWED
+  production_launch: USER_CONFIRMATION_REQUIRED
+  change_price_within_approved_range: POLICY_ALLOWED
+  send_marketing_campaign: POLICY_ALLOWED
+  spend_advertising_money: POLICY_ALLOWED
+  refund_customer_within_rules: POLICY_ALLOWED
+  treasury_payout: USER_CONFIRMATION_REQUIRED
+  community_payout: USER_CONFIRMATION_REQUIRED
+  add_community_organization: QUALIFIED_HUMAN_REQUIRED
+  change_accounting_formula: QUALIFIED_HUMAN_REQUIRED
+  modify_profit_split: PROHIBITED
+
+mandatory_denials:
+  agent_self_escalation: true
+  agent_issues_own_grant: true
+  agent_modifies_own_budget_ceiling: true
+  action_splitting_to_evade_limit: true
+  hypothesis_author_grades_own_validation: true
+  impact_allocator_verifies_own_allocation: true
+  participating_organization_scores_itself: true
+  venture_controls_treasury: true
+  marketing_controls_accounting: true
+
+budget_authority:
+  external_enforcement_required: true
+  amount_minor_units_must_be_integer: true
+  active_grant_required: true
+  cumulative_spend_must_not_exceed_ceiling: true
+  expired_or_revoked_grant_effect: deny
+
+audit:
+  required_fields: [decision_id, action, actor_id, authority_class, authority_grant_id, policy_version, evidence_ids, decided_at, outcome, denial_reason]
+  decisions_are_immutable: true

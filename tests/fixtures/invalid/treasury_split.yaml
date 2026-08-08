@@ -1,0 +1,4 @@
+kind: treasury
+entries:
+  - {distributable_profit: 100, community_allocation: 60, organization_allocation: 40}
+totals: {distributable_profit: 100, community_allocation: 60, organization_allocation: 40}

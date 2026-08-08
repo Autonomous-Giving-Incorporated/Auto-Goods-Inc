@@ -1,0 +1,57 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://schemas.autogoods.inc/market-signal.schema.json",
+  "title": "Market Signal",
+  "type": "object",
+  "additionalProperties": false,
+  "properties": {
+    "signal_id": {
+      "$ref": "definitions.schema.json#/$defs/identifier"
+    },
+    "observed_at": {
+      "$ref": "definitions.schema.json#/$defs/timestamp"
+    },
+    "signal_type": {
+      "type": "string",
+      "enum": [
+        "SEARCH",
+        "SOCIAL",
+        "COMPETITOR",
+        "CUSTOMER",
+        "TECHNOLOGY",
+        "REGULATORY",
+        "OTHER"
+      ]
+    },
+    "summary": {
+      "type": "string",
+      "minLength": 1
+    },
+    "claims": {
+      "type": "array",
+      "items": {
+        "$ref": "definitions.schema.json#/$defs/evidenceClaim"
+      },
+      "minItems": 1
+    },
+    "provenance": {
+      "type": "array",
+      "items": {
+        "$ref": "definitions.schema.json#/$defs/provenance"
+      },
+      "minItems": 1
+    },
+    "created_at": {
+      "$ref": "definitions.schema.json#/$defs/timestamp"
+    }
+  },
+  "required": [
+    "signal_id",
+    "observed_at",
+    "signal_type",
+    "summary",
+    "claims",
+    "provenance",
+    "created_at"
+  ]
+}

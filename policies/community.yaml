@@ -1,0 +1,50 @@
+policy:
+  id: community
+  version: 0.1.0
+  effective_from: 2026-08-08
+  default_effect: deny
+  ai_determined_weighting: prohibited
+
+eligible_domains: [food, housing, healthcare, education, community_space]
+
+baseline_weights_basis_points:
+  food: 2000
+  housing: 2000
+  healthcare: 2000
+  education: 2000
+  community_space: 2000
+  total: 10000
+
+rounding:
+  unit: integer_minor_unit
+  method: deterministic_largest_remainder
+  tie_break_order: [food, housing, healthcare, education, community_space]
+  invariant: sum(domain_allocations) == CommunityAllocation
+
+organization_eligibility:
+  identity_verification: verified
+  legal_status: verified
+  bank_verification_state: verified
+  reporting_state: current
+  eligible_domain_required: true
+  verified_program_required: true
+  participating_organization_self_scoring: prohibited
+
+separation_of_duties:
+  allocator_must_not_be_verifier: true
+  recipient_must_not_verify_itself: true
+  payout_requires_human_approval: true
+
+future_weighting_inputs:
+  - demonstrated_need
+  - service_gap
+  - population_affected
+  - recipient_capacity
+  - marginal_dollar_utility
+  - evidence_quality
+  - historical_impact
+
+public_provenance:
+  chain: [Product, revenue_cohort, DistributionPeriod, CommunityAllocation, CommunityOrganization, CommunityProgram, ImpactReceipt]
+  private_customer_transaction_data: prohibited
+  bank_and_personal_data: prohibited

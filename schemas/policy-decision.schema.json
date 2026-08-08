@@ -1,0 +1,84 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://schemas.autogoods.inc/policy-decision.schema.json",
+  "title": "Policy Decision",
+  "type": "object",
+  "additionalProperties": false,
+  "properties": {
+    "decision_id": {
+      "$ref": "definitions.schema.json#/$defs/identifier"
+    },
+    "policy_id": {
+      "$ref": "definitions.schema.json#/$defs/identifier"
+    },
+    "policy_version": {
+      "type": "string",
+      "pattern": "^\\d+\\.\\d+\\.\\d+$"
+    },
+    "action_id": {
+      "$ref": "definitions.schema.json#/$defs/identifier"
+    },
+    "decision": {
+      "type": "string",
+      "enum": [
+        "ALLOW",
+        "DENY",
+        "HOLD",
+        "REQUIRE_HUMAN_APPROVAL"
+      ]
+    },
+    "rule_results": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "rule_id",
+          "passed",
+          "reason"
+        ],
+        "properties": {
+          "rule_id": {
+            "$ref": "definitions.schema.json#/$defs/identifier"
+          },
+          "passed": {
+            "type": "boolean"
+          },
+          "reason": {
+            "type": "string",
+            "minLength": 1
+          }
+        }
+      },
+      "minItems": 1
+    },
+    "decided_by": {
+      "$ref": "definitions.schema.json#/$defs/actor"
+    },
+    "decided_at": {
+      "$ref": "definitions.schema.json#/$defs/timestamp"
+    },
+    "input_sha256": {
+      "$ref": "definitions.schema.json#/$defs/sha256"
+    },
+    "provenance": {
+      "type": "array",
+      "items": {
+        "$ref": "definitions.schema.json#/$defs/provenance"
+      },
+      "minItems": 1
+    }
+  },
+  "required": [
+    "decision_id",
+    "policy_id",
+    "policy_version",
+    "action_id",
+    "decision",
+    "rule_results",
+    "decided_by",
+    "decided_at",
+    "input_sha256",
+    "provenance"
+  ]
+}

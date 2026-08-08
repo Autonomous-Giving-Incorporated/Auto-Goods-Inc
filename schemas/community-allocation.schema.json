@@ -1,0 +1,87 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://schemas.autogoods.inc/community-allocation.schema.json",
+  "title": "Community Allocation",
+  "type": "object",
+  "additionalProperties": false,
+  "properties": {
+    "allocation_id": {
+      "$ref": "definitions.schema.json#/$defs/identifier"
+    },
+    "distribution_id": {
+      "$ref": "definitions.schema.json#/$defs/identifier"
+    },
+    "organization_id": {
+      "$ref": "definitions.schema.json#/$defs/identifier"
+    },
+    "program_category": {
+      "type": "string",
+      "enum": [
+        "FREE_FOOD",
+        "FREE_HOUSING",
+        "FREE_HEALTHCARE",
+        "FREE_EDUCATION",
+        "FREE_COMMUNITY_SPACE"
+      ]
+    },
+    "amount": {
+      "$ref": "definitions.schema.json#/$defs/money"
+    },
+    "purpose": {
+      "type": "string",
+      "minLength": 1
+    },
+    "status": {
+      "type": "string",
+      "enum": [
+        "PROPOSED",
+        "APPROVED",
+        "PAID",
+        "CANCELLED"
+      ]
+    },
+    "approved_by": {
+      "$ref": "definitions.schema.json#/$defs/actor"
+    },
+    "approved_at": {
+      "$ref": "definitions.schema.json#/$defs/timestamp"
+    },
+    "ledger_event_ids": {
+      "type": "array",
+      "items": {
+        "$ref": "definitions.schema.json#/$defs/identifier"
+      },
+      "minItems": 0,
+      "uniqueItems": true
+    },
+    "evidence_ids": {
+      "type": "array",
+      "items": {
+        "$ref": "definitions.schema.json#/$defs/identifier"
+      },
+      "minItems": 1,
+      "uniqueItems": true
+    },
+    "provenance": {
+      "type": "array",
+      "items": {
+        "$ref": "definitions.schema.json#/$defs/provenance"
+      },
+      "minItems": 1
+    }
+  },
+  "required": [
+    "allocation_id",
+    "distribution_id",
+    "organization_id",
+    "program_category",
+    "amount",
+    "purpose",
+    "status",
+    "approved_by",
+    "approved_at",
+    "ledger_event_ids",
+    "evidence_ids",
+    "provenance"
+  ]
+}

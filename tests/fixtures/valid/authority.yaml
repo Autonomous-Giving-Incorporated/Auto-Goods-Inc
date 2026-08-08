@@ -1,0 +1,15 @@
+kind: authority
+assignments:
+  alice: [requester]
+  bob: [approver]
+  carol: [executor]
+grants:
+  request: [requester]
+  approve: [approver]
+  execute: [executor]
+incompatible_roles:
+  - [requester, approver]
+  - [approver, executor]
+actions:
+  - {actor: bob, operation: approve, requested_by: alice, approved_by: bob}
+  - {actor: carol, operation: execute}

@@ -1,0 +1,8 @@
+kind: authority
+assignments:
+  alice: [requester]
+grants:
+  approve: [approver]
+incompatible_roles: []
+actions:
+  - {actor: alice, operation: approve}

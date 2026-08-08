@@ -1,0 +1,6 @@
+kind: evidence
+items:
+  - {id: ev-1, label: OBSERVED, source: receipt-1}
+  - {id: ev-2, label: INFERRED, basis: [ev-1]}
+  - {id: ev-3, label: SPECULATIVE, authorizes_spend: false, authorizes_promotion: false}
+  - {id: ev-4, label: NOT_COMPUTABLE}
