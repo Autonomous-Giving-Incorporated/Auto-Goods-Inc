@@ -1,0 +1,73 @@
+policy:
+  id: authority
+  version: 1.0.0
+  effective_from: 2026-08-08
+  deterministic: true
+  precedence: [treasury, authority, lifecycle, portfolio, validation, community]
+  default_effect: deny
+
+authority_classes:
+  constitutional:
+    rank: 0
+    actors: [board]
+    powers: [amend_authority, dissolve_organization]
+    approval:
+      quorum_bps: 7500
+      affirmative_bps: 8000
+      community_notice_days: 30
+  fiduciary:
+    rank: 1
+    actors: [board, treasury_committee]
+    powers: [approve_budget, approve_disbursement, freeze_disbursement]
+    approval:
+      quorum_bps: 6667
+      affirmative_bps: 6667
+  portfolio:
+    rank: 2
+    actors: [portfolio_committee]
+    powers: [admit_project, advance_project, pause_project, retire_project]
+    approval:
+      quorum_bps: 6000
+      affirmative_bps: 6667
+  operational:
+    rank: 3
+    actors: [project_steward, operator]
+    powers: [submit_proposal, execute_approved_work, submit_evidence]
+    approval:
+      quorum_bps: 5000
+      affirmative_bps: 5001
+  advisory:
+    rank: 4
+    actors: [community_member, validator]
+    powers: [comment, challenge, attest]
+    approval: null
+
+rules:
+  - id: AUTH-001
+    effect: deny
+    when: actor_class_rank > required_class_rank
+    reason: insufficient_authority
+  - id: AUTH-002
+    effect: deny
+    when: actor_has_conflict_of_interest == true
+    reason: conflicted_actor_must_recuse
+  - id: AUTH-003
+    effect: deny
+    when: approval_quorum_bps < required_quorum_bps
+    reason: quorum_not_met
+  - id: AUTH-004
+    effect: deny
+    when: approval_affirmative_bps < required_affirmative_bps
+    reason: threshold_not_met
+  - id: AUTH-005
+    effect: allow
+    when: all_prior_rules_pass == true
+    reason: authorized
+
+tie_breaking:
+  order: [higher_authority_rank, earlier_submitted_at, lexicographically_lower_action_id]
+  unresolved_effect: deny
+
+audit:
+  required_fields: [action_id, actor_id, actor_class, requested_power, submitted_at, decision, rule_results]
+  retention_days: 2555

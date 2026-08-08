@@ -1,0 +1,64 @@
+policy:
+  id: lifecycle
+  version: 1.0.0
+  effective_from: 2026-08-08
+  deterministic: true
+  default_effect: deny
+
+states: [draft, intake, diligence, approved, funded, active, paused, completed, retired, rejected]
+initial_state: draft
+terminal_states: [retired, rejected]
+
+transitions:
+  - {from: draft, to: intake, authority: operational, gate: intake_complete}
+  - {from: intake, to: diligence, authority: portfolio, gate: eligibility_passed}
+  - {from: intake, to: rejected, authority: portfolio, gate: rejection_recorded}
+  - {from: diligence, to: approved, authority: portfolio, gate: diligence_passed}
+  - {from: diligence, to: rejected, authority: portfolio, gate: rejection_recorded}
+  - {from: approved, to: funded, authority: fiduciary, gate: funding_ready}
+  - {from: funded, to: active, authority: portfolio, gate: activation_ready}
+  - {from: active, to: paused, authority: portfolio, gate: pause_recorded}
+  - {from: paused, to: active, authority: portfolio, gate: remediation_passed}
+  - {from: active, to: completed, authority: portfolio, gate: completion_passed}
+  - {from: completed, to: retired, authority: portfolio, gate: closeout_passed}
+  - {from: paused, to: retired, authority: portfolio, gate: closeout_passed}
+
+gates:
+  intake_complete:
+    requires: [project_id, title, steward_id, beneficiary, requested_amount, intended_outcomes, submitted_at]
+  eligibility_passed:
+    requires: [mission_fit_attestation, conflict_disclosures, sanctions_check, duplicate_check]
+  diligence_passed:
+    requires: [budget, milestones, risk_register, measurement_plan, validation_plan, community_comment_summary]
+  rejection_recorded:
+    requires: [decision_record, reason_code, decided_at]
+  funding_ready:
+    requires: [approved_budget, treasury_allocation, signed_terms, disbursement_schedule]
+  activation_ready:
+    requires: [initial_disbursement_receipt, steward_acceptance, public_project_record]
+  pause_recorded:
+    requires: [reason_code, remediation_owner, review_date]
+  remediation_passed:
+    requires: [remediation_evidence, validator_attestation, restart_decision]
+  completion_passed:
+    requires: [milestone_results, outcome_evidence, final_financial_report, validator_attestation]
+  closeout_passed:
+    requires: [asset_disposition, residual_funds_return, lessons_record, archive_manifest]
+
+rules:
+  - id: LIFE-001
+    effect: deny
+    when: requested_transition_not_listed == true
+    reason: invalid_transition
+  - id: LIFE-002
+    effect: deny
+    when: required_gate_item_missing == true
+    reason: gate_incomplete
+  - id: LIFE-003
+    effect: deny
+    when: authority_check_passed == false
+    reason: unauthorized_transition
+  - id: LIFE-004
+    effect: allow
+    when: transition_listed_and_gate_complete_and_authorized == true
+    reason: transition_approved

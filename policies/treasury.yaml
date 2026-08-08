@@ -1,0 +1,55 @@
+policy:
+  id: treasury
+  version: 1.0.0
+  effective_from: 2026-08-08
+  deterministic: true
+  immutable_split: true
+  amendment: prohibited
+  default_effect: deny
+
+inflow_split:
+  basis_points_denominator: 10000
+  allocations:
+    charitable_programs_bps: 7000
+    operating_reserve_bps: 1500
+    community_grants_bps: 1000
+    validation_and_audit_bps: 500
+  total_bps: 10000
+  rounding:
+    method: floor
+    residual_destination: charitable_programs
+
+restrictions:
+  charitable_programs: [approved_project_disbursements]
+  operating_reserve: [payroll, infrastructure, legal, compliance, emergency_operations]
+  community_grants: [community_baseline_grants]
+  validation_and_audit: [independent_validation, financial_audit, security_audit]
+  cross_bucket_transfer: prohibited
+  borrowing_against_restricted_buckets: prohibited
+
+rules:
+  - id: TREAS-001
+    effect: deny
+    when: allocation_total_bps != 10000
+    reason: invalid_split
+  - id: TREAS-002
+    effect: deny
+    when: proposed_allocation_bps != inflow_split.allocations
+    reason: immutable_split_violation
+  - id: TREAS-003
+    effect: deny
+    when: expenditure_purpose_not_allowed_for_bucket == true
+    reason: restricted_use_violation
+  - id: TREAS-004
+    effect: deny
+    when: cross_bucket_transfer_requested == true
+    reason: transfer_prohibited
+  - id: TREAS-005
+    effect: allow
+    when: split_exact_and_use_allowed_and_authorized == true
+    reason: treasury_action_approved
+
+reconciliation:
+  frequency: monthly
+  tolerance_usd: 0
+  required_fields: [period, opening_balance, inflows, allocations, expenditures, closing_balance, transaction_ids, reconciled_at]
