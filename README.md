@@ -45,3 +45,15 @@ The roadmap moves from constitution through market intelligence, validation, a g
 - [Key lifecycle](docs/KEY-LIFECYCLE.md)
 - [Governance](GOVERNANCE.md)
 - [Security](SECURITY.md)
+
+## Local validation
+
+Install the validation-only dependencies and run the same public commands used by continuous integration:
+
+```sh
+python -m pip install --requirement requirements-dev.txt
+python tools/validate.py --include-valid-fixtures
+python -m unittest discover -s tests -v
+```
+
+JSON Schema syntax also has a standard-library fallback check: `python -S tools/validate.py schemas/*.json`. YAML policy validation intentionally fails closed when PyYAML is unavailable.
