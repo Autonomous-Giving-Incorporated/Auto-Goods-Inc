@@ -1,74 +1,42 @@
 policy:
   id: validation
-  version: 1.0.0
+  version: 0.1.0
   effective_from: 2026-08-08
-  deterministic: true
-  default_effect: fail
+  default_outcome: HOLD
 
-evidence_requirements:
-  identity:
-    required_fields: [evidence_id, project_id, milestone_id, evidence_type, issuer, issued_at, collected_at, uri, sha256]
-    sha256_pattern: '^[a-f0-9]{64}$'
-  provenance:
-    chain_of_custody_required: true
-    original_artifact_required: true
-    collection_method_required: true
-  independence:
-    validator_must_not_be_steward: true
-    validator_must_not_be_payee: true
-    conflict_disclosure_required: true
-  freshness:
-    maximum_age_days_at_submission: 90
-  corroboration:
-    minimum_independent_sources: 2
-    financial_claim_requires_transaction_record: true
-    beneficiary_claim_requires_consent_or_anonymization: true
-  privacy:
-    secrets_prohibited: true
-    unnecessary_personal_data_prohibited: true
-    beneficiary_reidentification_prohibited: true
+claim_labels: [OBSERVED, INFERRED, SPECULATIVE, NOT_COMPUTABLE]
+label_rules:
+  OBSERVED:
+    provenance_required: true
+  INFERRED:
+    observed_input_ids_required: true
+  SPECULATIVE:
+    may_authorize_spend: false
+    may_authorize_venture_promotion: false
+  NOT_COMPUTABLE:
+    remain_unresolved: true
+    invented_substitution: prohibited
 
-outcomes: [pass, fail, inconclusive]
+separation_of_duties:
+  hypothesis_author_may_grade_success: false
+  experiment_designer_may_be_evidence_judge: false
+  validation_operator_may_unilaterally_promote: false
 
-rules:
-  - id: VAL-001
-    outcome: fail
-    when: required_field_missing == true
-    reason: incomplete_evidence
-  - id: VAL-002
-    outcome: fail
-    when: hash_verification_passed == false
-    reason: integrity_failure
-  - id: VAL-003
-    outcome: fail
-    when: provenance_complete == false
-    reason: provenance_failure
-  - id: VAL-004
-    outcome: fail
-    when: validator_independent == false
-    reason: independence_failure
-  - id: VAL-005
-    outcome: fail
-    when: privacy_check_passed == false
-    reason: privacy_failure
-  - id: VAL-006
-    outcome: inconclusive
-    when: independent_source_count < 2
-    reason: insufficient_corroboration
-  - id: VAL-007
-    outcome: inconclusive
-    when: evidence_age_days > 90
-    reason: stale_evidence
-  - id: VAL-008
-    outcome: pass
-    when: all_mandatory_checks_pass_and_claim_corroborated == true
-    reason: validated
+outcomes: [PROMOTE, HOLD, KILL]
+promotion_requires_external_validation:
+  accepted_types: [paid_pilot, preorder, actual_usage, waitlist_conversion, successful_paid_test, signed_LOI, direct_customer_evidence]
+  llm_claim_of_demand_qualifies: false
+  provenance_required: true
+  threshold_predeclared: true
+  failure_conditions_predeclared: true
+  independent_judgment_required: true
 
-release_gate:
-  disbursement_requires: pass
-  inconclusive_action: hold
-  fail_action: reject_and_open_remediation
+budget:
+  integer_minor_units: true
+  active_AuthorityGrant_required: true
+  spend_above_ceiling: prohibited
+  self_modified_ceiling: prohibited
 
-retention:
-  evidence_days: 2555
-  decision_record_days: 2555
+proof_cost:
+  includes: [money, time, irreversible_commitment]
+  prefer_high_expected_value_low_proof_cost: true

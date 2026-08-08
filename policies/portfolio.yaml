@@ -1,77 +1,39 @@
 policy:
   id: portfolio
-  version: 1.0.0
+  version: 0.1.0
   effective_from: 2026-08-08
-  deterministic: true
   default_effect: deny
 
-currency: USD
 limits:
-  max_active_projects: 20
-  max_total_committed_usd: 1000000
-  max_single_project_committed_usd: 100000
-  max_single_project_bps_of_total_committed: 2000
-  max_single_geography_bps: 4000
-  max_single_cause_bps: 4000
-  max_high_risk_projects: 3
-  minimum_operating_reserve_bps: 1500
+  max_active_validation_experiments: 5
+  max_simultaneous_builds: 2
+  portfolio_concentration_requires_review: true
 
-risk_classes:
-  low: {score_min: 0, score_max: 24}
-  medium: {score_min: 25, score_max: 49}
-  high: {score_min: 50, score_max: 74}
-  prohibited: {score_min: 75, score_max: 100}
+prefer:
+  - low_proof_cost
+  - short_time_to_revenue
+  - high_automation_fit
+  - low_regulatory_complexity
+  - low_support_burden
 
-admission_order:
-  sort:
-    - {field: mission_fit_score, direction: descending}
-    - {field: validated_benefit_per_usd, direction: descending}
-    - {field: submitted_at, direction: ascending}
-    - {field: project_id, direction: ascending}
+avoid_initially:
+  - medical_decision_software
+  - individualized_financial_advice
+  - physical_inventory_businesses
+  - heavily_regulated_marketplaces
+  - custom_enterprise_consulting_projects
+  - products_requiring_large_support_teams
 
-rules:
-  - id: PORT-001
-    effect: deny
-    when: projected_active_projects > limits.max_active_projects
-    reason: active_project_limit
-  - id: PORT-002
-    effect: deny
-    when: projected_total_committed_usd > limits.max_total_committed_usd
-    reason: total_commitment_limit
-  - id: PORT-003
-    effect: deny
-    when: project_committed_usd > limits.max_single_project_committed_usd
-    reason: project_absolute_limit
-  - id: PORT-004
-    effect: deny
-    when: project_share_bps > limits.max_single_project_bps_of_total_committed
-    reason: project_concentration_limit
-  - id: PORT-005
-    effect: deny
-    when: geography_share_bps > limits.max_single_geography_bps
-    reason: geography_concentration_limit
-  - id: PORT-006
-    effect: deny
-    when: cause_share_bps > limits.max_single_cause_bps
-    reason: cause_concentration_limit
-  - id: PORT-007
-    effect: deny
-    when: projected_high_risk_projects > limits.max_high_risk_projects
-    reason: high_risk_limit
-  - id: PORT-008
-    effect: deny
-    when: projected_reserve_bps < limits.minimum_operating_reserve_bps
-    reason: reserve_floor
-  - id: PORT-009
-    effect: deny
-    when: risk_class == prohibited
-    reason: prohibited_risk
-  - id: PORT-010
-    effect: allow
-    when: all_limits_pass == true
-    reason: admission_within_limits
+kill_conditions:
+  - validation_budget_exhausted_without_threshold
+  - buyer_hypothesis_falsified
+  - acquisition_cost_breaks_allowed_economics
+  - support_cost_destroys_unit_economics
+  - legal_or_platform_constraint_invalidates_model
+  - substitute_removes_meaningful_differentiation
+  - evidence_confidence_collapses
 
-calculation:
-  basis_points_denominator: 10000
-  rounding: floor
-  zero_denominator_result_bps: 0
+portfolio_controller:
+  responsibilities: [owns_venture_queue, compares_venture_candidates, assigns_validation_budgets, promotes_holds_or_kills_by_policy, manages_portfolio_concentration]
+  controls_treasury_invariants: prohibited
+  may_modify_own_budget_ceiling: prohibited

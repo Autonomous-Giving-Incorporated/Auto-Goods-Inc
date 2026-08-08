@@ -40,5 +40,8 @@ The roadmap moves from constitution through market intelligence, validation, a g
 - [Portfolio](docs/PORTFOLIO.md)
 - [Treasury](docs/TREASURY.md)
 - [Community impact](docs/COMMUNITY-IMPACT.md)
+- [Policy and schema migration](docs/POLICY-MIGRATIONS.md)
+- [Deployment runbook](docs/DEPLOYMENT-RUNBOOK.md)
+- [Key lifecycle](docs/KEY-LIFECYCLE.md)
 - [Governance](GOVERNANCE.md)
 - [Security](SECURITY.md)

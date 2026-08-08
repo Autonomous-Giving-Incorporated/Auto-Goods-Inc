@@ -1,55 +1,49 @@
 policy:
   id: treasury
-  version: 1.0.0
+  version: 0.1.0
   effective_from: 2026-08-08
   deterministic: true
-  immutable_split: true
-  amendment: prohibited
   default_effect: deny
+  runtime_mutable: false
+  ordinary_agent_amendment: PROHIBITED
 
-inflow_split:
-  basis_points_denominator: 10000
-  allocations:
-    charitable_programs_bps: 7000
-    operating_reserve_bps: 1500
-    community_grants_bps: 1000
-    validation_and_audit_bps: 500
-  total_bps: 10000
-  rounding:
-    method: floor
-    residual_destination: charitable_programs
+money:
+  representation: integer_minor_units
+  floating_point: prohibited
 
-restrictions:
-  charitable_programs: [approved_project_disbursements]
-  operating_reserve: [payroll, infrastructure, legal, compliance, emergency_operations]
-  community_grants: [community_baseline_grants]
-  validation_and_audit: [independent_validation, financial_audit, security_audit]
-  cross_bucket_transfer: prohibited
-  borrowing_against_restricted_buckets: prohibited
+formulas:
+  NetProductRevenue: Revenue - Refunds - Chargebacks - ProcessingFees
+  OperatingContribution: NetProductRevenue - DirectProductCosts - Infrastructure - Support - ApprovedAcquisitionSpend
+  DistributableProfit: OperatingContribution - TaxReserve - RequiredOperatingReserve
 
-rules:
-  - id: TREAS-001
-    effect: deny
-    when: allocation_total_bps != 10000
-    reason: invalid_split
-  - id: TREAS-002
-    effect: deny
-    when: proposed_allocation_bps != inflow_split.allocations
-    reason: immutable_split_violation
-  - id: TREAS-003
-    effect: deny
-    when: expenditure_purpose_not_allowed_for_bucket == true
-    reason: restricted_use_violation
-  - id: TREAS-004
-    effect: deny
-    when: cross_bucket_transfer_requested == true
-    reason: transfer_prohibited
-  - id: TREAS-005
-    effect: allow
-    when: split_exact_and_use_allowed_and_authorized == true
-    reason: treasury_action_approved
+eligibility:
+  distribute_only_when_distributable_profit_positive: true
+  zero_or_negative_effect: no_distribution
+  reconciliation_required: true
 
-reconciliation:
-  frequency: monthly
-  tolerance_usd: 0
-  required_fields: [period, opening_balance, inflows, allocations, expenditures, closing_balance, transaction_ids, reconciled_at]
+split:
+  organization_numerator: 1
+  community_numerator: 1
+  denominator: 2
+  organization_rounding: floor
+  community_allocation: DistributableProfit - OrganizationAllocation
+  invariants:
+    - OrganizationAllocation + CommunityAllocation == DistributableProfit
+    - absolute(OrganizationAllocation - CommunityAllocation) <= 1
+
+freeze:
+  state_on_failure: FROZEN
+  blocks: [treasury_payout, community_payout, distribution_finalization]
+  triggers:
+    - non_integer_money
+    - incomplete_reconciliation
+    - split_sum_mismatch
+    - split_difference_exceeds_one_minor_unit
+    - ledger_integrity_uncertain
+    - required_approval_missing
+    - incident_freeze_invoked
+  unfreeze_requires: [resolved_trigger, reconciled_ledger, independent_review, human_approval, RunReceipt]
+
+change_control:
+  requires: [explicit_human_governance, versioned_policy_change, migration_review, security_review, tests, immutable_audit_trail]
+  reinterpret_historical_periods: prohibited

@@ -1,13 +1,17 @@
 kind: lifecycle
-states: [draft, submitted, approved, executed]
-initial: draft
-final: executed
+states: [SIGNAL, DISCOVERED, EVIDENCED, VALIDATION_READY, VALIDATING, APPROVED]
+initial: SIGNAL
+final: APPROVED
 transitions:
-  draft: [submitted]
-  submitted: [approved, draft]
-  approved: [executed]
-  executed: []
+  SIGNAL: [DISCOVERED]
+  DISCOVERED: [EVIDENCED]
+  EVIDENCED: [VALIDATION_READY]
+  VALIDATION_READY: [VALIDATING]
+  VALIDATING: [APPROVED]
+  APPROVED: []
 events:
-  - {from: draft, to: submitted}
-  - {from: submitted, to: approved}
-  - {from: approved, to: executed}
+  - {from: SIGNAL, to: DISCOVERED}
+  - {from: DISCOVERED, to: EVIDENCED}
+  - {from: EVIDENCED, to: VALIDATION_READY}
+  - {from: VALIDATION_READY, to: VALIDATING}
+  - {from: VALIDATING, to: APPROVED}

@@ -1,5 +1,5 @@
 kind: treasury
 entries:
-  - {amount: 1000, category_share: 500, treasury_share: 500}
-  - {amount: 250, category_share: 125, treasury_share: 125}
-totals: {amount: 1250, category_share: 625, treasury_share: 625}
+  - {distributable_profit: 1000, community_allocation: 500, organization_allocation: 500}
+  - {distributable_profit: 251, community_allocation: 126, organization_allocation: 125}
+totals: {distributable_profit: 1251, community_allocation: 626, organization_allocation: 625}

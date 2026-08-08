@@ -24,7 +24,7 @@ try:
 except ImportError:  # pragma: no cover
     jsonschema = None
 
-EVIDENCE_LABELS = {"observed", "reported", "inferred", "proposed"}
+EVIDENCE_LABELS = {"OBSERVED", "INFERRED", "SPECULATIVE", "NOT_COMPUTABLE"}
 
 @dataclass(frozen=True)
 class Finding:
@@ -128,10 +128,16 @@ def _validate_evidence(doc: dict[str, Any]) -> list[str]:
         ids.add(ident)
         if label not in EVIDENCE_LABELS:
             errors.append(f"items[{index}] has invalid evidence label {label!r}")
-        if label in {"observed", "reported"} and not item.get("source"):
-            errors.append(f"items[{index}] label {label!r} requires source")
-        if label == "inferred" and not item.get("basis"):
-            errors.append(f"items[{index}] inferred evidence requires basis")
+        if label == "OBSERVED" and not item.get("source"):
+            errors.append(f"items[{index}] OBSERVED evidence requires source")
+        if label == "INFERRED" and not item.get("basis"):
+            errors.append(f"items[{index}] INFERRED evidence requires observed basis")
+        if label == "INFERRED" and item.get("basis") and not all(b in ids for b in item.get("basis", [])):
+            errors.append(f"items[{index}] INFERRED basis must reference prior observed inputs")
+        if label == "SPECULATIVE" and (item.get("authorizes_spend") or item.get("authorizes_promotion")):
+            errors.append(f"items[{index}] SPECULATIVE evidence cannot authorize spend or promotion")
+        if label == "NOT_COMPUTABLE" and item.get("substituted_value") is not None:
+            errors.append(f"items[{index}] NOT_COMPUTABLE cannot contain an invented substitute")
     return errors
 
 
@@ -140,25 +146,25 @@ def _validate_treasury(doc: dict[str, Any]) -> list[str]:
     if not isinstance(entries, list):
         return ["entries must be a list"]
     errors: list[str] = []
-    total = category = treasury = 0
+    total = community = organization = 0
     for index, entry in enumerate(entries):
         if not isinstance(entry, dict):
             errors.append(f"entries[{index}] must be a mapping")
             continue
-        amounts = [entry.get(k) for k in ("amount", "category_share", "treasury_share")]
+        amounts = [entry.get(k) for k in ("distributable_profit", "community_allocation", "organization_allocation")]
         if not all(_integer(v) for v in amounts):
             errors.append(f"entries[{index}] monetary values must be integer minor units")
             continue
-        amount, cat, tre = amounts
-        if amount < 0 or cat < 0 or tre < 0:
-            errors.append(f"entries[{index}] monetary values must be non-negative")
-        if cat + tre != amount:
-            errors.append(f"entries[{index}] shares do not sum to amount")
-        if cat != tre or amount != cat * 2:
-            errors.append(f"entries[{index}] violates exact 50/50 invariant")
-        total += amount; category += cat; treasury += tre
+        amount, com, org = amounts
+        if amount <= 0 or com < 0 or org < 0:
+            errors.append(f"entries[{index}] distributable profit must be positive and allocations non-negative")
+        if com + org != amount:
+            errors.append(f"entries[{index}] allocations do not sum to distributable profit")
+        if abs(com - org) > 1:
+            errors.append(f"entries[{index}] violates 50/50 one-minor-unit tolerance")
+        total += amount; community += com; organization += org
     declared = doc.get("totals", {})
-    for name, actual in (("amount", total), ("category_share", category), ("treasury_share", treasury)):
+    for name, actual in (("distributable_profit", total), ("community_allocation", community), ("organization_allocation", organization)):
         if declared.get(name) != actual:
             errors.append(f"declared total {name!r} is {declared.get(name)!r}, expected {actual}")
     return errors
@@ -169,6 +175,9 @@ def _validate_categories(doc: dict[str, Any]) -> list[str]:
     if not isinstance(categories, dict) or not categories:
         return ["categories must be a non-empty mapping"]
     errors: list[str] = []
+    required_categories = {"food", "housing", "healthcare", "education", "community_space"}
+    if set(categories) != required_categories:
+        errors.append(f"categories must be exactly {sorted(required_categories)!r}")
     actual = 0
     for name, amount in categories.items():
         if not isinstance(name, str) or not name:

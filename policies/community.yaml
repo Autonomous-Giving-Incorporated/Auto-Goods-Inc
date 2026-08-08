@@ -1,68 +1,50 @@
 policy:
   id: community
-  version: 1.0.0
+  version: 0.1.0
   effective_from: 2026-08-08
-  deterministic: true
   default_effect: deny
+  ai_determined_weighting: prohibited
 
-baseline:
-  membership:
-    minimum_age_days: 30
-    accepted_code_of_conduct: true
-    verified_unique_account: true
-  access:
-    policy_records_public: true
-    portfolio_records_public: true
-    treasury_reports_public: true
-    evidence_public_by_default: true
-    privacy_redactions_required: true
-  participation:
-    proposal_comment_days: 14
-    material_change_comment_days: 21
-    treasury_report_frequency: monthly
-    portfolio_report_frequency: quarterly
-    response_to_substantiated_challenge_days: 14
-  grants:
-    minimum_open_application_days: 21
-    published_criteria_required: true
-    conflict_disclosure_required: true
-    decision_rationale_required: true
-    repeat_recipient_max_awards_per_rolling_365_days: 2
-  conduct:
-    harassment_prohibited: true
-    retaliation_prohibited: true
-    doxxing_prohibited: true
-    fraud_prohibited: true
+eligible_domains: [food, housing, healthcare, education, community_space]
 
-rules:
-  - id: COMM-001
-    effect: deny
-    when: membership_requirement_missing == true
-    reason: ineligible_participant
-  - id: COMM-002
-    effect: deny
-    when: comment_window_days < required_comment_window_days
-    reason: insufficient_notice
-  - id: COMM-003
-    effect: deny
-    when: required_public_record_missing == true
-    reason: transparency_failure
-  - id: COMM-004
-    effect: deny
-    when: privacy_redaction_incomplete == true
-    reason: privacy_failure
-  - id: COMM-005
-    effect: deny
-    when: conduct_violation_substantiated == true
-    reason: conduct_violation
-  - id: COMM-006
-    effect: allow
-    when: eligibility_notice_transparency_privacy_and_conduct_checks_pass == true
-    reason: community_action_approved
+baseline_weights_basis_points:
+  food: 2000
+  housing: 2000
+  healthcare: 2000
+  education: 2000
+  community_space: 2000
+  total: 10000
 
-challenge_process:
-  required_fields: [challenge_id, submitter_id, subject_id, claim, evidence_ids, submitted_at]
-  acknowledgement_days: 3
-  decision_days: 14
-  appeal_days: 14
-  tie_breaking: [earlier_submitted_at, lexicographically_lower_challenge_id]
+rounding:
+  unit: integer_minor_unit
+  method: deterministic_largest_remainder
+  tie_break_order: [food, housing, healthcare, education, community_space]
+  invariant: sum(domain_allocations) == CommunityAllocation
+
+organization_eligibility:
+  identity_verification: verified
+  legal_status: verified
+  bank_verification_state: verified
+  reporting_state: current
+  eligible_domain_required: true
+  verified_program_required: true
+  participating_organization_self_scoring: prohibited
+
+separation_of_duties:
+  allocator_must_not_be_verifier: true
+  recipient_must_not_verify_itself: true
+  payout_requires_human_approval: true
+
+future_weighting_inputs:
+  - demonstrated_need
+  - service_gap
+  - population_affected
+  - recipient_capacity
+  - marginal_dollar_utility
+  - evidence_quality
+  - historical_impact
+
+public_provenance:
+  chain: [Product, revenue_cohort, DistributionPeriod, CommunityAllocation, CommunityOrganization, CommunityProgram, ImpactReceipt]
+  private_customer_transaction_data: prohibited
+  bank_and_personal_data: prohibited
