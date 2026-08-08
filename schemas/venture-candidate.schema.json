@@ -1,0 +1,65 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://schemas.autogoods.inc/venture-candidate.schema.json",
+  "title": "Venture Candidate",
+  "type": "object",
+  "additionalProperties": false,
+  "properties": {
+    "candidate_id": {
+      "$ref": "definitions.schema.json#/$defs/identifier"
+    },
+    "opportunity_id": {
+      "$ref": "definitions.schema.json#/$defs/identifier"
+    },
+    "experiment_ids": {
+      "type": "array",
+      "items": {
+        "$ref": "definitions.schema.json#/$defs/identifier"
+      },
+      "minItems": 1,
+      "uniqueItems": true
+    },
+    "name": {
+      "type": "string",
+      "minLength": 1
+    },
+    "score_bps": {
+      "type": "integer",
+      "minimum": 0,
+      "maximum": 10000
+    },
+    "score_claims": {
+      "type": "array",
+      "items": {
+        "$ref": "definitions.schema.json#/$defs/evidenceClaim"
+      },
+      "minItems": 1
+    },
+    "recommendation": {
+      "type": "string",
+      "enum": [
+        "PROMOTE",
+        "HOLD",
+        "KILL"
+      ]
+    },
+    "rank": {
+      "type": "integer",
+      "minimum": 1
+    },
+    "created_at": {
+      "$ref": "definitions.schema.json#/$defs/timestamp"
+    }
+  },
+  "required": [
+    "candidate_id",
+    "opportunity_id",
+    "experiment_ids",
+    "name",
+    "score_bps",
+    "score_claims",
+    "recommendation",
+    "rank",
+    "created_at"
+  ]
+}

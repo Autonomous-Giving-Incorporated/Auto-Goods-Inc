@@ -1,0 +1,105 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://schemas.autogoods.inc/run-receipt.schema.json",
+  "title": "Run Receipt",
+  "type": "object",
+  "additionalProperties": false,
+  "properties": {
+    "run_receipt_id": {
+      "$ref": "definitions.schema.json#/$defs/identifier"
+    },
+    "run_id": {
+      "$ref": "definitions.schema.json#/$defs/identifier"
+    },
+    "command": {
+      "type": "string",
+      "minLength": 1
+    },
+    "status": {
+      "type": "string",
+      "enum": [
+        "SUCCEEDED",
+        "FAILED",
+        "BLOCKED",
+        "NOT_COMPUTABLE"
+      ]
+    },
+    "started_at": {
+      "$ref": "definitions.schema.json#/$defs/timestamp"
+    },
+    "completed_at": {
+      "$ref": "definitions.schema.json#/$defs/timestamp"
+    },
+    "actor": {
+      "$ref": "definitions.schema.json#/$defs/actor"
+    },
+    "input_sha256": {
+      "$ref": "definitions.schema.json#/$defs/sha256"
+    },
+    "output_sha256": {
+      "$ref": "definitions.schema.json#/$defs/sha256"
+    },
+    "policy_decision_ids": {
+      "type": "array",
+      "items": {
+        "$ref": "definitions.schema.json#/$defs/identifier"
+      },
+      "minItems": 0,
+      "uniqueItems": true
+    },
+    "evidence_ids": {
+      "type": "array",
+      "items": {
+        "$ref": "definitions.schema.json#/$defs/identifier"
+      },
+      "minItems": 0,
+      "uniqueItems": true
+    },
+    "artifacts": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "artifact_id",
+          "uri",
+          "sha256"
+        ],
+        "properties": {
+          "artifact_id": {
+            "$ref": "definitions.schema.json#/$defs/identifier"
+          },
+          "uri": {
+            "$ref": "definitions.schema.json#/$defs/uri"
+          },
+          "sha256": {
+            "$ref": "definitions.schema.json#/$defs/sha256"
+          }
+        }
+      },
+      "minItems": 0
+    },
+    "provenance": {
+      "type": "array",
+      "items": {
+        "$ref": "definitions.schema.json#/$defs/provenance"
+      },
+      "minItems": 1
+    }
+  },
+  "required": [
+    "run_receipt_id",
+    "run_id",
+    "command",
+    "status",
+    "started_at",
+    "completed_at",
+    "actor",
+    "input_sha256",
+    "output_sha256",
+    "policy_decision_ids",
+    "evidence_ids",
+    "artifacts",
+    "provenance"
+  ]
+}

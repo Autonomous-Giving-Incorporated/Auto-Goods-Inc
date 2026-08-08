@@ -1,0 +1,86 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://schemas.autogoods.inc/community-organization.schema.json",
+  "title": "Community Organization",
+  "type": "object",
+  "additionalProperties": false,
+  "properties": {
+    "organization_id": {
+      "$ref": "definitions.schema.json#/$defs/identifier"
+    },
+    "legal_name": {
+      "type": "string",
+      "minLength": 1
+    },
+    "registration_id": {
+      "type": "string",
+      "minLength": 1
+    },
+    "jurisdiction": {
+      "type": "string",
+      "minLength": 1
+    },
+    "program_categories": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "enum": [
+          "FREE_FOOD",
+          "FREE_HOUSING",
+          "FREE_HEALTHCARE",
+          "FREE_EDUCATION",
+          "FREE_COMMUNITY_SPACE"
+        ]
+      },
+      "minItems": 1,
+      "uniqueItems": true
+    },
+    "verification_status": {
+      "type": "string",
+      "enum": [
+        "PENDING",
+        "VERIFIED",
+        "SUSPENDED",
+        "REJECTED"
+      ]
+    },
+    "verified_at": {
+      "oneOf": [
+        {
+          "$ref": "definitions.schema.json#/$defs/timestamp"
+        },
+        {
+          "type": "null"
+        }
+      ]
+    },
+    "verified_by": {
+      "oneOf": [
+        {
+          "$ref": "definitions.schema.json#/$defs/actor"
+        },
+        {
+          "type": "null"
+        }
+      ]
+    },
+    "provenance": {
+      "type": "array",
+      "items": {
+        "$ref": "definitions.schema.json#/$defs/provenance"
+      },
+      "minItems": 1
+    }
+  },
+  "required": [
+    "organization_id",
+    "legal_name",
+    "registration_id",
+    "jurisdiction",
+    "program_categories",
+    "verification_status",
+    "verified_at",
+    "verified_by",
+    "provenance"
+  ]
+}

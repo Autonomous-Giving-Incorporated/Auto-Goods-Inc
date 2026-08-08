@@ -1,0 +1,75 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://schemas.autogoods.inc/impact-receipt.schema.json",
+  "title": "Impact Receipt",
+  "type": "object",
+  "additionalProperties": false,
+  "properties": {
+    "impact_receipt_id": {
+      "$ref": "definitions.schema.json#/$defs/identifier"
+    },
+    "allocation_id": {
+      "$ref": "definitions.schema.json#/$defs/identifier"
+    },
+    "organization_id": {
+      "$ref": "definitions.schema.json#/$defs/identifier"
+    },
+    "program_category": {
+      "type": "string",
+      "enum": [
+        "FREE_FOOD",
+        "FREE_HOUSING",
+        "FREE_HEALTHCARE",
+        "FREE_EDUCATION",
+        "FREE_COMMUNITY_SPACE"
+      ]
+    },
+    "amount_received": {
+      "$ref": "definitions.schema.json#/$defs/money"
+    },
+    "received_at": {
+      "$ref": "definitions.schema.json#/$defs/timestamp"
+    },
+    "impact_claims": {
+      "type": "array",
+      "items": {
+        "$ref": "definitions.schema.json#/$defs/evidenceClaim"
+      },
+      "minItems": 1
+    },
+    "evidence_ids": {
+      "type": "array",
+      "items": {
+        "$ref": "definitions.schema.json#/$defs/identifier"
+      },
+      "minItems": 1,
+      "uniqueItems": true
+    },
+    "issued_by": {
+      "$ref": "definitions.schema.json#/$defs/actor"
+    },
+    "issued_at": {
+      "$ref": "definitions.schema.json#/$defs/timestamp"
+    },
+    "provenance": {
+      "type": "array",
+      "items": {
+        "$ref": "definitions.schema.json#/$defs/provenance"
+      },
+      "minItems": 1
+    }
+  },
+  "required": [
+    "impact_receipt_id",
+    "allocation_id",
+    "organization_id",
+    "program_category",
+    "amount_received",
+    "received_at",
+    "impact_claims",
+    "evidence_ids",
+    "issued_by",
+    "issued_at",
+    "provenance"
+  ]
+}

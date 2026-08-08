@@ -1,0 +1,66 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://schemas.autogoods.inc/market-gap.schema.json",
+  "title": "Market Gap",
+  "type": "object",
+  "additionalProperties": false,
+  "properties": {
+    "gap_id": {
+      "$ref": "definitions.schema.json#/$defs/identifier"
+    },
+    "signal_ids": {
+      "type": "array",
+      "items": {
+        "$ref": "definitions.schema.json#/$defs/identifier"
+      },
+      "minItems": 1,
+      "uniqueItems": true
+    },
+    "customer_segment": {
+      "type": "string",
+      "minLength": 1
+    },
+    "problem": {
+      "$ref": "definitions.schema.json#/$defs/evidenceClaim"
+    },
+    "current_alternatives": {
+      "type": "array",
+      "items": {
+        "$ref": "definitions.schema.json#/$defs/evidenceClaim"
+      },
+      "minItems": 1
+    },
+    "unmet_need": {
+      "$ref": "definitions.schema.json#/$defs/evidenceClaim"
+    },
+    "status": {
+      "type": "string",
+      "enum": [
+        "IDENTIFIED",
+        "QUALIFIED",
+        "REJECTED"
+      ]
+    },
+    "created_at": {
+      "$ref": "definitions.schema.json#/$defs/timestamp"
+    },
+    "provenance": {
+      "type": "array",
+      "items": {
+        "$ref": "definitions.schema.json#/$defs/provenance"
+      },
+      "minItems": 1
+    }
+  },
+  "required": [
+    "gap_id",
+    "signal_ids",
+    "customer_segment",
+    "problem",
+    "current_alternatives",
+    "unmet_need",
+    "status",
+    "created_at",
+    "provenance"
+  ]
+}

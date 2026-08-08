@@ -1,0 +1,86 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://schemas.autogoods.inc/evidence.schema.json",
+  "title": "Evidence",
+  "type": "object",
+  "additionalProperties": false,
+  "properties": {
+    "evidence_id": {
+      "$ref": "definitions.schema.json#/$defs/identifier"
+    },
+    "subject_id": {
+      "$ref": "definitions.schema.json#/$defs/identifier"
+    },
+    "label": {
+      "$ref": "definitions.schema.json#/$defs/evidenceLabel"
+    },
+    "claim": {
+      "type": "string",
+      "minLength": 1
+    },
+    "observed_input_ids": {
+      "type": "array",
+      "items": {
+        "$ref": "definitions.schema.json#/$defs/identifier"
+      },
+      "minItems": 0,
+      "uniqueItems": true
+    },
+    "provenance": {
+      "type": "array",
+      "items": {
+        "$ref": "definitions.schema.json#/$defs/provenance"
+      },
+      "minItems": 0
+    },
+    "created_at": {
+      "$ref": "definitions.schema.json#/$defs/timestamp"
+    }
+  },
+  "required": [
+    "evidence_id",
+    "subject_id",
+    "label",
+    "claim",
+    "observed_input_ids",
+    "provenance",
+    "created_at"
+  ],
+  "allOf": [
+    {
+      "if": {
+        "properties": {
+          "label": {
+            "const": "OBSERVED"
+          }
+        }
+      },
+      "then": {
+        "properties": {
+          "provenance": {
+            "minItems": 1
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "label": {
+            "const": "INFERRED"
+          }
+        }
+      },
+      "then": {
+        "properties": {
+          "observed_input_ids": {
+            "minItems": 1
+          },
+          "provenance": {
+            "minItems": 1
+          }
+        }
+      }
+    }
+  ]
+}
