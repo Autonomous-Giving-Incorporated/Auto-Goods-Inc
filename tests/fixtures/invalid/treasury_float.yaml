@@ -1,0 +1,4 @@
+kind: treasury
+entries:
+  - {amount: 10.0, category_share: 5, treasury_share: 5}
+totals: {amount: 10, category_share: 5, treasury_share: 5}

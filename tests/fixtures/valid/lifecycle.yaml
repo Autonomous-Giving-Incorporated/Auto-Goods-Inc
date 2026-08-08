@@ -1,0 +1,13 @@
+kind: lifecycle
+states: [draft, submitted, approved, executed]
+initial: draft
+final: executed
+transitions:
+  draft: [submitted]
+  submitted: [approved, draft]
+  approved: [executed]
+  executed: []
+events:
+  - {from: draft, to: submitted}
+  - {from: submitted, to: approved}
+  - {from: approved, to: executed}
